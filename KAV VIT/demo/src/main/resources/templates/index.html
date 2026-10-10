@@ -1,0 +1,62 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduGuard Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<div class="app-layout">
+
+    <aside class="sidebar">
+        <div class="brand">EduGuard</div>
+        <div class="brand-subtitle">Student Support System</div>
+
+        <a class="nav-link active" th:href="@{/}">Dashboard</a>
+        <a class="nav-link" th:href="@{/students}">Students</a>
+    </aside>
+
+    <div class="main-area">
+        <header class="topbar">
+            <h2>EduGuard Dashboard</h2>
+            <span class="admin-label">Administrator</span>
+        </header>
+
+        <main class="page-content">
+            <h1 class="page-title">Student Overview</h1>
+            <p class="page-description">
+                Monitor student records and identify students who may need support.
+            </p>
+
+            <section class="dashboard-cards">
+                <div class="stat-card">
+                    <h3>Total Students</h3>
+                    <p th:text="${totalStudents}">0</p>
+                </div>
+
+                <div class="stat-card high">
+                    <h3>High Risk</h3>
+                    <p th:text="${highRisk}">0</p>
+                </div>
+
+                <div class="stat-card medium">
+                    <h3>Medium Risk</h3>
+                    <p th:text="${mediumRisk}">0</p>
+                </div>
+
+                <div class="stat-card low">
+                    <h3>Low Risk</h3>
+                    <p th:text="${lowRisk}">0</p>
+                </div>
+            </section>
+
+            <a class="button" th:href="@{/students}">Manage Students</a>
+        </main>
+    </div>
+</div>
+
+</body>
+</html>

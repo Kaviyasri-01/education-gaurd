@@ -1,0 +1,197 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>EduGuard - Student Management</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<div class="app-layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="brand">EduGuard</div>
+        <div class="brand-subtitle">Student Support System</div>
+
+        <a class="nav-link" th:href="@{/}">Dashboard</a>
+        <a class="nav-link active" th:href="@{/students}">Students</a>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-area">
+
+        <!-- Navbar -->
+        <header class="topbar">
+            <h2>Student Management</h2>
+            <span class="admin-label">Administrator</span>
+        </header>
+
+        <main class="page-content">
+
+            <h1 class="page-title">Manage Students</h1>
+            <p class="page-description">
+                Add student details, search records, and review risk levels.
+            </p>
+
+            <!-- Success and Error Messages -->
+            <div class="alert success"
+                 th:if="${success}"
+                 th:text="${success}"></div>
+
+            <div class="alert error"
+                 th:if="${error}"
+                 th:text="${error}"></div>
+
+            <!-- Add Student Form -->
+            <section class="content-card">
+                <h2>Add New Student</h2>
+
+                <form th:action="@{/students}"
+                      th:object="${student}"
+                      method="post">
+
+                    <div class="student-form">
+
+                        <input type="text"
+                               th:field="*{name}"
+                               placeholder="Student name"
+                               required>
+
+                        <input type="email"
+                               th:field="*{email}"
+                               placeholder="Email address"
+                               required>
+
+                        <input type="text"
+                               th:field="*{department}"
+                               placeholder="Department"
+                               required>
+
+                        <input type="number"
+                               th:field="*{attendancePercentage}"
+                               placeholder="Attendance (%)"
+                               min="0" max="100" step="0.1"
+                               required>
+
+                        <input type="number"
+                               th:field="*{marks}"
+                               placeholder="Marks (out of 100)"
+                               min="0" max="100" step="0.1"
+                               required>
+
+                    </div>
+
+                    <button type="submit">+ Add Student</button>
+                </form>
+            </section>
+
+            <!-- Search and Filter -->
+            <section class="content-card" style="margin-top: 22px;">
+                <h2>Student Records</h2>
+
+                <form th:action="@{/students}"
+                      method="get"
+                      class="filter-form">
+
+                    <input type="text"
+                           name="keyword"
+                           placeholder="Search by name or email"
+                           th:value="${keyword}">
+
+                    <select name="risk">
+                        <option value="ALL"
+                                th:selected="${selectedRisk == null
+                                    or selectedRisk == ''
+                                    or selectedRisk == 'ALL'}">
+                            All Risk Levels
+                        </option>
+
+                        <option value="HIGH"
+                                th:selected="${selectedRisk == 'HIGH'}">
+                            High Risk
+                        </option>
+
+                        <option value="MEDIUM"
+                                th:selected="${selectedRisk == 'MEDIUM'}">
+                            Medium Risk
+                        </option>
+
+                        <option value="LOW"
+                                th:selected="${selectedRisk == 'LOW'}">
+                            Low Risk
+                        </option>
+                    </select>
+
+                    <button type="submit">Search / Filter</button>
+                    <a class="button"
+                       th:href="@{/students}">Reset</a>
+                </form>
+
+                <!-- Responsive Table -->
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Student Name</th>
+                            <th>Email</th>
+                            <th>Department</th>
+                            <th>Attendance</th>
+                            <th>Marks</th>
+                            <th>Risk Level</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        <tr th:each="s : ${students}">
+                            <td th:text="${s.id}"></td>
+                            <td th:text="${s.name}"></td>
+                            <td th:text="${s.email}"></td>
+                            <td th:text="${s.department}"></td>
+                            <td th:text="${s.attendancePercentage + '%'}"></td>
+                            <td th:text="${s.marks}"></td>
+
+                            <td>
+                                <span class="risk-badge"
+                                      th:classappend="${s.riskLevel == 'HIGH'
+                                          ? ' risk-high'
+                                          : (s.riskLevel == 'MEDIUM'
+                                              ? ' risk-medium'
+                                              : ' risk-low')}"
+                                      th:text="${s.riskLevel}">
+                                </span>
+                            </td>
+
+                            <td>
+                                <form th:action="@{/students/{id}/delete(id=${s.id})}"
+                                      method="post"
+                                      onsubmit="return confirm('Are you sure you want to delete this student?');">
+
+                                    <button class="delete"
+                                            type="submit">
+                                        Delete
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+
+                        <tr th:if="${#lists.isEmpty(students)}">
+                            <td colspan="8">
+                                No students found. Try another search or add a student.
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+        </main>
+    </div>
+</div>
+
+</body>
+</html>
